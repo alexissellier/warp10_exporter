@@ -64,7 +64,7 @@ func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 		for _, line := range strings.Split(string(body), "\n") {
-			tokens := strings.Split(line, " ")
+			tokens := strings.Split(strings.Trim(line, "\t\r\n"), " ")
 			if len(tokens) == 3 {
 				metric := strings.Replace(tokens[1], ".", "_", -1)
 				metric = metric[:strings.IndexRune(metric, '{')]
@@ -78,6 +78,8 @@ func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 				}
 			}
 		}
+	} else {
+		log.Printf("Cannot fetch sensision output\n")
 	}
 }
 
