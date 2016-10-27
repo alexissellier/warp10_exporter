@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io/ioutil"
@@ -16,6 +15,7 @@ var (
 	warpAddr      = flag.String("warp.addr", "127.0.0.1:4242", "Address of sensision")
 	listenAddress = flag.String("web.listen-address", ":9121", "Address to listen on for web interface and telemetry.")
 	metricPath    = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+	debug         = flag.Bool("debug", false, "Debug mode displays what is fetch.")
 )
 
 type warp struct {
@@ -29,7 +29,6 @@ type warpMetric struct {
 }
 
 func parseFloatOrZero(s string) float64 {
-	fmt.Println(s)
 	res, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return 0.0
@@ -69,7 +68,11 @@ func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 				metric := strings.Replace(tokens[1], ".", "_", -1)
 				metric = metric[:strings.IndexRune(metric, '{')]
 				if val, ok := w.metrics[metric]; ok {
-					ch <- prometheus.MustNewConstMetric(val.desc, val.valType, parseFloatOrZero(tokens[2]))
+					value := parseFloatOrZero(tokens[2])
+					if *debug {
+						log.Printf("Metric name %s, value %f\n", metric, value)
+					}
+					ch <- prometheus.MustNewConstMetric(val.desc, val.valType, value)
 				}
 			}
 		}
@@ -83,8 +86,13 @@ func (w *warp) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func (w *warp) Collect(ch chan<- prometheus.Metric) {
-	fmt.Println("Collect")
+	if *debug {
+		log.Printf("Start collecting")
+	}
 	w.scrapeSensisionMetrics(ch)
+	if *debug {
+		log.Printf("Stop collecting")
+	}
 }
 
 func main() {
