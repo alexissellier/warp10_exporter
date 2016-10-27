@@ -31,6 +31,7 @@ type warpMetric struct {
 func parseFloatOrZero(s string) float64 {
 	res, err := strconv.ParseFloat(s, 64)
 	if err != nil {
+		log.Printf("Cannot parse %s\n", s)
 		return 0.0
 	}
 	return res
@@ -70,6 +71,7 @@ func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 				if val, ok := w.metrics[metric]; ok {
 					value := parseFloatOrZero(tokens[2])
 					if *debug {
+						log.Printf("Sensision output %s\n", line)
 						log.Printf("Metric name %s, value %f\n", metric, value)
 					}
 					ch <- prometheus.MustNewConstMetric(val.desc, val.valType, value)
