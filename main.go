@@ -1,30 +1,31 @@
 package main
+
 import (
 	"flag"
-	"net/http"
-	"io/ioutil"
 	"fmt"
-	"log"
-	"strings"
-	"strconv"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 var (
-	warpAddr     = flag.String("warp.addr", "127.0.0.1:4242", "Address of sensision")
+	warpAddr      = flag.String("warp.addr", "127.0.0.1:4242", "Address of sensision")
 	listenAddress = flag.String("web.listen-address", ":9121", "Address to listen on for web interface and telemetry.")
 	metricPath    = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 )
 
-type Warp struct {
-	warpAddr 	 string
-	metrics          map[string]WarpMetric
+type warp struct {
+	warpAddr string
+	metrics  map[string]warpMetric
 }
 
-type WarpMetric struct {
-	desc	*prometheus.Desc
-	valType	prometheus.ValueType
+type warpMetric struct {
+	desc    *prometheus.Desc
+	valType prometheus.ValueType
 }
 
 func parseFloatOrZero(s string) float64 {
@@ -36,28 +37,28 @@ func parseFloatOrZero(s string) float64 {
 	return res
 }
 
-func NewWarpExporter(addr string) *Warp {
-	e := Warp{
+func NewWarpExporter(addr string) *warp {
+	e := warp{
 		warpAddr: addr,
-		metrics:  map[string]WarpMetric {
-			"warp_ingress_update_requests" : {
-				desc: prometheus.NewDesc("warp_ingress_update_requests", "Number of request", nil, nil),
+		metrics: map[string]warpMetric{
+			"warp_ingress_update_requests": {
+				desc:    prometheus.NewDesc("warp_ingress_update_requests", "Number of request", nil, nil),
 				valType: prometheus.CounterValue,
 			},
-			"warp_ingress_update_parseerrors" : {
-				desc: prometheus.NewDesc("warp_ingress_update_parseerrors", "Number of parse error", nil, nil),
+			"warp_ingress_update_parseerrors": {
+				desc:    prometheus.NewDesc("warp_ingress_update_parseerrors", "Number of parse error", nil, nil),
 				valType: prometheus.CounterValue,
 			},
 			"warp_ingress_update_invalidtoken": {
-				desc: prometheus.NewDesc("warp_ingress_update_invalidtoken", "Number of invalid token", nil, nil),
+				desc:    prometheus.NewDesc("warp_ingress_update_invalidtoken", "Number of invalid token", nil, nil),
 				valType: prometheus.CounterValue,
 			},
-		},	
+		},
 	}
 	return &e
 }
 
-func (w *Warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
+func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 	resp, err := http.Get("http://" + w.warpAddr + "/metrics")
 	if err == nil {
 		defer resp.Body.Close()
@@ -75,18 +76,18 @@ func (w *Warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (w *Warp) Describe(ch chan<- *prometheus.Desc) {
+func (w *warp) Describe(ch chan<- *prometheus.Desc) {
 	for _, i := range w.metrics {
 		ch <- i.desc
 	}
 }
 
-func (w *Warp) Collect(ch chan<- prometheus.Metric) {
+func (w *warp) Collect(ch chan<- prometheus.Metric) {
 	fmt.Println("Collect")
 	w.scrapeSensisionMetrics(ch)
 }
 
-func main () {
+func main() {
 	flag.Parse()
 	e := NewWarpExporter(*warpAddr)
 	prometheus.MustRegister(e)
@@ -100,6 +101,6 @@ func main () {
 		       </body>
 		       </html>`))
 	})
-        log.Printf("providing metrics at %s%s", *listenAddress, *metricPath)
+	log.Printf("providing metrics at %s%s", *listenAddress, *metricPath)
 	log.Fatal(http.ListenAndServe(*listenAddress, nil))
 }
