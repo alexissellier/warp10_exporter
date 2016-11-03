@@ -53,6 +53,29 @@ func NewWarpExporter(addr string) *warp {
 				desc:    prometheus.NewDesc("warp_ingress_update_invalidtoken", "Number of invalid token", nil, nil),
 				valType: prometheus.CounterValue,
 			},
+			"warp_directory_streaming_requests": {
+				desc: prometheus.NewDesc("warp_directory_streaming_requests", "Number of directory request", nil, nil),
+				valType: prometheus.CounterValue,
+			},
+			"warp_directory_metadata_cache_hits": {
+				desc: prometheus.NewDesc("warp_directory_metadata_cache_hits", "Number of directory cache hit", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_directory_hbase_puts": {
+				desc: prometheus.NewDesc("warp_directory_hbase_puts", "Number of directory hbase puts", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_directory_kafka_faileddecrypts" : {
+				desc: prometheus.NewDesc("warp_directory_kafka_faileddecrypts", "Fail to descrypt kafka message", nil, nil),
+				valType: prometheus.CounterValue,				
+			},
+			"warp_directory_gts" : {
+				desc: prometheus.NewDesc("warp_directory_gts", "Number of GTS metadata managed by Directory", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_store_hbase_puts_committed": {
+				desc: prometheus.NewDesc("warp_store_hbase_puts_committed", "Number of HBase Puts committed in Store", nil, nil),
+			},
 		},
 	}
 	return &e
