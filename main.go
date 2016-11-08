@@ -37,7 +37,7 @@ func parseFloatOrZero(s string) float64 {
 	return res
 }
 
-func NewWarpExporter(addr string) *warp {
+func newWarpExporter(addr string) *warp {
 	e := warp{
 		warpAddr: addr,
 		metrics: map[string]warpMetric{
@@ -54,23 +54,23 @@ func NewWarpExporter(addr string) *warp {
 				valType: prometheus.CounterValue,
 			},
 			"warp_directory_streaming_requests": {
-				desc: prometheus.NewDesc("warp_directory_streaming_requests", "Number of directory request", nil, nil),
+				desc:    prometheus.NewDesc("warp_directory_streaming_requests", "Number of directory request", nil, nil),
 				valType: prometheus.CounterValue,
 			},
 			"warp_directory_metadata_cache_hits": {
-				desc: prometheus.NewDesc("warp_directory_metadata_cache_hits", "Number of directory cache hit", nil, nil),
+				desc:    prometheus.NewDesc("warp_directory_metadata_cache_hits", "Number of directory cache hit", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
 			"warp_directory_hbase_puts": {
-				desc: prometheus.NewDesc("warp_directory_hbase_puts", "Number of directory hbase puts", nil, nil),
+				desc:    prometheus.NewDesc("warp_directory_hbase_puts", "Number of directory hbase puts", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
-			"warp_directory_kafka_faileddecrypts" : {
-				desc: prometheus.NewDesc("warp_directory_kafka_faileddecrypts", "Fail to descrypt kafka message", nil, nil),
-				valType: prometheus.CounterValue,				
+			"warp_directory_kafka_faileddecrypts": {
+				desc:    prometheus.NewDesc("warp_directory_kafka_faileddecrypts", "Fail to descrypt kafka message", nil, nil),
+				valType: prometheus.CounterValue,
 			},
-			"warp_directory_gts" : {
-				desc: prometheus.NewDesc("warp_directory_gts", "Number of GTS metadata managed by Directory", nil, nil),
+			"warp_directory_gts": {
+				desc:    prometheus.NewDesc("warp_directory_gts", "Number of GTS metadata managed by Directory", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
 			"warp_store_hbase_puts_committed": {
