@@ -1,4 +1,4 @@
-## Warp10 exporter for Prometheus
+## Warp10 exporter for Prometheus [![Go Report Card](https://goreportcard.com/badge/github.com/AlexisSellier/warp10_exporter)](https://goreportcard.com/report/github.com/AlexisSellier/warp10_exporter)
 
 Scrape the sensision output of a [Warp10](https://github.com/cityzendata/warp10-platform) daemon (currently handling version 1.0.18)
 
