@@ -124,7 +124,7 @@ func (w *warp) Collect(ch chan<- prometheus.Metric) {
 
 func main() {
 	flag.Parse()
-	e := NewWarpExporter(*warpAddr)
+	e := newWarpExporter(*warpAddr)
 	prometheus.MustRegister(e)
 	http.Handle(*metricPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
