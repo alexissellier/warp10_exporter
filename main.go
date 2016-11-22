@@ -75,6 +75,7 @@ func newWarpExporter(addr string) *warp {
 			},
 			"warp_store_hbase_puts_committed": {
 				desc: prometheus.NewDesc("warp_store_hbase_puts_committed", "Number of HBase Puts committed in Store", nil, nil),
+				valType: prometheus.GaugeValue,
 			},
 		},
 	}
