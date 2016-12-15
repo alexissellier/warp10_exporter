@@ -2,13 +2,14 @@ package main
 
 import (
 	"flag"
+	"bufio"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"regexp"
 )
 
 var (
@@ -17,6 +18,12 @@ var (
 	metricPath    = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 	debug         = flag.Bool("debug", false, "Debug mode displays what is fetch.")
 )
+
+var reg   *regexp.Regexp
+
+func init() {
+	reg = regexp.MustCompile(`((?:\.?\w+)+)\{([^}]*)\} (\w*)`)
+}
 
 type warp struct {
 	warpAddr string
@@ -86,20 +93,18 @@ func (w *warp) scrapeSensisionMetrics(ch chan<- prometheus.Metric) {
 	resp, err := http.Get("http://" + w.warpAddr + "/metrics")
 	if err == nil {
 		defer resp.Body.Close()
-		body, _ := ioutil.ReadAll(resp.Body)
-		for _, line := range strings.Split(string(body), "\n") {
-			tokens := strings.Split(strings.Trim(line, "\t\r\n"), " ")
-			if len(tokens) == 3 {
-				metric := strings.Replace(tokens[1], ".", "_", -1)
-				metric = metric[:strings.IndexRune(metric, '{')]
-				if val, ok := w.metrics[metric]; ok {
-					value := parseFloatOrZero(tokens[2])
-					if *debug {
-						log.Printf("Sensision output %s\n", line)
-						log.Printf("Metric name %s, value %f\n", metric, value)
-					}
-					ch <- prometheus.MustNewConstMetric(val.desc, val.valType, value)
+		scanner := bufio.NewScanner(resp.Body)
+		for scanner.Scan() {
+			line := scanner.Text()
+			tokens := reg.FindAllStringSubmatch(strings.Trim(line, "\t\r\n"), -1)
+			metric_name := strings.Replace(tokens[0][1], ".", "_", -1)
+			if val, ok := w.metrics[metric_name]; ok {
+				value := parseFloatOrZero(tokens[0][3])
+				if *debug {
+					log.Printf("Sensision output %s\n", line)
+					log.Printf("Metric name %s, value %f\n", metric_name, value)
 				}
+				ch <- prometheus.MustNewConstMetric(val.desc, val.valType, value)
 			}
 		}
 	} else {
