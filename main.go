@@ -84,6 +84,35 @@ func newWarpExporter(addr string) *warp {
 				desc: prometheus.NewDesc("warp_store_hbase_puts_committed", "Number of HBase Puts committed in Store", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
+			"warp_script_requests" : {
+				desc: prometheus.NewDesc("warp_script_requests", "Number of script request", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_script_ops" : {
+				desc: prometheus.NewDesc("warp_script_ops", "Number of ops executed", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_hbase_client_scanners" : {
+				desc: prometheus.NewDesc("warp_hbase_client_scanners", "Number of hbase client scanners", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_store_aborts"  :{
+				desc: prometheus.NewDesc("warp_store_aborts", "Number of aborts experienced", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_store_hbase.conn_resets" : {
+				desc: prometheus.NewDesc("warp_store_hbase_conn_resets", "Number of times the HBase connection was reset", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_store_kafka_commits_overdue" : {
+				desc: prometheus.NewDesc("warp_store_kafka_commits_overdue", "Number of kafka commits overdue", nil, nil),
+				valType: prometheus.GaugeValue,
+
+			},
+			"warp_store_gtsdecoders" : {
+				desc: prometheus.NewDesc("warp_store_gtsdecoders", "Number of gts decoded", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
 		},
 	}
 	return &e
