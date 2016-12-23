@@ -100,18 +100,21 @@ func newWarpExporter(addr string) *warp {
 				desc: prometheus.NewDesc("warp_store_aborts", "Number of aborts experienced", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
-			"warp_store_hbase.conn_resets" : {
+			"warp_store_hbase_conn_resets" : {
 				desc: prometheus.NewDesc("warp_store_hbase_conn_resets", "Number of times the HBase connection was reset", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
 			"warp_store_kafka_commits_overdue" : {
 				desc: prometheus.NewDesc("warp_store_kafka_commits_overdue", "Number of kafka commits overdue", nil, nil),
 				valType: prometheus.GaugeValue,
-
 			},
 			"warp_store_gtsdecoders" : {
 				desc: prometheus.NewDesc("warp_store_gtsdecoders", "Number of gts decoded", nil, nil),
 				valType: prometheus.GaugeValue,
+			},
+			"warp_throttling_rate_global" : {
+				desc: prometheus.NewDesc("warp_throttling_rate_global", "Throtlling rate", nil, nil),
+				valType: prometheus.CounterValue,
 			},
 		},
 	}
