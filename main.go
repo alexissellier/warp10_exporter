@@ -112,8 +112,12 @@ func newWarpExporter(addr string) *warp {
 				desc: prometheus.NewDesc("warp_store_gtsdecoders", "Number of gts decoded", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
-			"warp_throttling_rate_global" : {
-				desc: prometheus.NewDesc("warp_throttling_rate_global", "Throtlling rate", nil, nil),
+			"warp_throttling_rate_perapp_global" : {
+				desc: prometheus.NewDesc("warp_throttling_rate_perapp_global", "Throtlling rate", nil, nil),
+				valType: prometheus.CounterValue,
+			},
+			"warp_ingress_update_datapoints_global" : {
+				desc: prometheus.NewDesc("warp_ingress_update_datapoints_global", "Datapoints update per second", nil,nil),
 				valType: prometheus.CounterValue,
 			},
 		},
