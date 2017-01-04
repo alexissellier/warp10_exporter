@@ -64,8 +64,16 @@ func newWarpExporter(addr string) *warp {
 				desc:    prometheus.NewDesc("warp_directory_streaming_requests", "Number of directory request", nil, nil),
 				valType: prometheus.CounterValue,
 			},
+			"warp_directory_metadata_cache_size": {
+				desc:    prometheus.NewDesc("warp_directory_metadata_cache_size", "Metadata cache size", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
 			"warp_directory_metadata_cache_hits": {
 				desc:    prometheus.NewDesc("warp_directory_metadata_cache_hits", "Number of directory cache hit", nil, nil),
+				valType: prometheus.GaugeValue,
+			},
+			"warp_directory_classes" : {
+				desc:    prometheus.NewDesc("warp_directory_classes", "Number of distinct classes managed by Directory", nil, nil),
 				valType: prometheus.GaugeValue,
 			},
 			"warp_directory_hbase_puts": {
